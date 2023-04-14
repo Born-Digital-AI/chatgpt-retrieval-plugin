@@ -24,16 +24,13 @@ def get_embeddings(texts: List[str]) -> List[List[float]]:
         Exception: If the OpenAI API call fails.
     """
     # Call the OpenAI API to get the embeddings
-    try:
-        response = openai.Embedding.create(input=texts, deployment_id="text-embedding-ada-002")
-    except Exception as e:
-        print(e)
-
-    # Extract the embedding data from the response
-    data = response["data"]  # type: ignore
+    result_list = []
+    for text in texts:
+        response = openai.Embedding.create(input=text, deployment_id="text-embedding-ada-002")["data"][0]["embedding"]
+        result_list.append(response)
 
     # Return the embeddings as a list of lists of floats
-    return [result["embedding"] for result in data]
+    return result_list
 
 
 @retry(wait=wait_random_exponential(min=1, max=20), stop=stop_after_attempt(3))
