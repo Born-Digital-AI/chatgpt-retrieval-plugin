@@ -5,9 +5,6 @@ import os
 from tenacity import retry, wait_random_exponential, stop_after_attempt
 
 openai.api_key = os.environ.get('API_KEY')
-openai.api_type = "azure"
-openai.api_base = os.environ.get('API_BASE') 
-openai.api_version = "2023-03-15-preview"
 
 @retry(wait=wait_random_exponential(min=1, max=20), stop=stop_after_attempt(3))
 def get_embeddings(texts: List[str]) -> List[List[float]]:
@@ -24,13 +21,11 @@ def get_embeddings(texts: List[str]) -> List[List[float]]:
         Exception: If the OpenAI API call fails.
     """
     # Call the OpenAI API to get the embeddings
-    result_list = []
-    for text in texts:
-        response = openai.Embedding.create(input=text, deployment_id="text-embedding-ada-002")["data"][0]["embedding"]
-        result_list.append(response)
-
+    response = openai.Embedding.create(input=texts, model="text-embedding-ada-002")
+    # Extract the embedding data from the response
+    data = response["data"]  # type: ignore
     # Return the embeddings as a list of lists of floats
-    return result_list
+    return [result["embedding"] for result in data]
 
 
 @retry(wait=wait_random_exponential(min=1, max=20), stop=stop_after_attempt(3))
