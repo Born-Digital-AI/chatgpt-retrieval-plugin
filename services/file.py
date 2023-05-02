@@ -3,7 +3,7 @@ from io import BufferedReader
 from typing import Optional
 from fastapi import UploadFile
 import mimetypes
-from PyPDF2 import PdfReader
+from pypdf import PdfReader
 import docx2txt
 import csv
 import pptx
