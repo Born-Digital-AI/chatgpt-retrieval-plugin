@@ -8,6 +8,8 @@ openai.api_key = os.environ.get('API_KEY')
 openai.api_type = "azure"
 openai.api_base = os.environ.get('API_BASE') 
 openai.api_version = "2023-03-15-preview"
+EMBEDDING_MODEL_NAME = os.environ.get('EMBEDDING_MODEL_NAME')
+GPT35_MODEL_NAME = os.environ.get('GPT35_MODEL_NAME')
 
 @retry(wait=wait_random_exponential(min=1, max=20), stop=stop_after_attempt(3))
 def get_embeddings(texts: List[str]) -> List[List[float]]:
@@ -26,7 +28,7 @@ def get_embeddings(texts: List[str]) -> List[List[float]]:
     # Call the OpenAI API to get the embeddings
     result_list = []
     for text in texts:
-        response = openai.Embedding.create(input=text, deployment_id="text-embedding-ada-002")["data"][0]["embedding"]
+        response = openai.Embedding.create(input=text, deployment_id=EMBEDDING_MODEL_NAME)["data"][0]["embedding"]
         result_list.append(response)
 
     # Return the embeddings as a list of lists of floats
@@ -51,6 +53,7 @@ def get_chat_completion(
     Raises:
         Exception: If the OpenAI API call fails.
     """
+    model=GPT35_MODEL_NAME
     # call the OpenAI chat completion API with the given messages
     response = openai.ChatCompletion.create(
         model=model,
