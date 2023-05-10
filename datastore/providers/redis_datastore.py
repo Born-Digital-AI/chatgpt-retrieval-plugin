@@ -91,7 +91,7 @@ class RedisDataStore(DataStore):
             logging.error(f"Error setting up Redis: {e}")
             raise e
 
-        await _check_redis_module_exist(client, modules=REDIS_REQUIRED_MODULES)
+#        await _check_redis_module_exist(client, modules=REDIS_REQUIRED_MODULES)
 
         dim = kwargs.get("dim", VECTOR_DIMENSION)
         redisearch_schema = {
